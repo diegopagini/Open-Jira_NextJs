@@ -1,13 +1,16 @@
 /** @format */
 import { Typography } from '@mui/material';
 
-import type { NextPage } from 'next';
+import { Layout } from '../components/layouts';
 
+import type { NextPage } from 'next';
 const HomePage: NextPage = () => {
 	return (
-		<Typography variant='h1' color='primary'>
-			Hola mundo
-		</Typography>
+		<Layout title='OpenJira - App'>
+			<Typography variant='h1' color='primary'>
+				Hola mundo
+			</Typography>
+		</Layout>
 	);
 };
 
