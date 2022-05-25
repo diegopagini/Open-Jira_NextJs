@@ -2,9 +2,9 @@
 import { Card, CardContent, CardHeader, Grid } from '@mui/material';
 
 import { Layout } from '../components/layouts';
+import { EntryList } from '../components/ui';
 
 import type { NextPage } from 'next';
-
 const HomePage: NextPage = () => {
 	return (
 		<Layout title='Home - OpenJira'>
@@ -19,7 +19,7 @@ const HomePage: NextPage = () => {
 
 						<CardContent>
 							{/* Agregar */}
-							{/* Listado */}
+							<EntryList status='pending' />
 						</CardContent>
 					</Card>
 				</Grid>
@@ -31,6 +31,9 @@ const HomePage: NextPage = () => {
 						}}
 					>
 						<CardHeader title='En Progreso' />
+						<CardContent>
+							<EntryList status='in-progress' />
+						</CardContent>
 					</Card>
 				</Grid>
 
@@ -41,6 +44,9 @@ const HomePage: NextPage = () => {
 						}}
 					>
 						<CardHeader title='Completadas' />
+						<CardContent>
+							<EntryList status='finished' />
+						</CardContent>
 					</Card>
 				</Grid>
 			</Grid>
