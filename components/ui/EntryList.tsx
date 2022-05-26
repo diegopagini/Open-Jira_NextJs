@@ -1,6 +1,6 @@
 /** @format */
 import { List, Paper } from '@mui/material';
-import { FC, useContext } from 'react';
+import { FC, useContext, useMemo } from 'react';
 
 import { EntriesContext } from '../../context/entries';
 import { Entry, EntryStatus } from '../../interfaces';
@@ -13,8 +13,9 @@ interface Props {
 export const EntryList: FC<Props> = ({ status }) => {
 	const { entries } = useContext(EntriesContext);
 
-	const entriesByStatus = entries.filter(
-		(entry: Entry) => entry.status === status
+	const entriesByStatus = useMemo(
+		() => entries.filter((entry: Entry) => entry.status === status),
+		[entries, status]
 	);
 
 	return (
