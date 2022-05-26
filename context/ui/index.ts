@@ -1,5 +1,5 @@
 /** @format */
 
 export * from './UIContext';
-export * from './UiProvider';
-export * from './UiReducer';
+export * from './UIProvider';
+export * from './uiReducer';
