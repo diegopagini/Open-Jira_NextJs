@@ -16,7 +16,7 @@ export default function handler(
 	res: NextApiResponse<Data>
 ) {
 	const { id } = req.query; // Tomo el id.
-	if (mongoose.isValidObjectId(id)) {
+	if (!mongoose.isValidObjectId(id)) {
 		return res.status(400).json({ message: 'El id no es válido ' + id });
 	}
 
@@ -24,11 +24,17 @@ export default function handler(
 		case 'PUT':
 			return updateEntry(req, res);
 
+		case 'GET':
+			return getEntry(req, res);
+
 		default:
 			return res.status(400).json({ message: 'Método no existe' });
 	}
 }
 
+/**
+ * Función para actualizar una entrada.
+ */
 const updateEntry = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { id } = req.query;
 
@@ -59,7 +65,6 @@ const updateEntry = async (req: NextApiRequest, res: NextApiResponse) => {
 				new: true,
 			}
 		);
-
 		await db.disconnect();
 		res.status(200).json(updatedEntry);
 	} catch (error: any) {
@@ -67,4 +72,21 @@ const updateEntry = async (req: NextApiRequest, res: NextApiResponse) => {
 		await db.disconnect();
 		res.status(400).json({ message: error.errors.status.message });
 	}
+};
+
+/**
+ * Función para obtener una entrada.
+ */
+const getEntry = async (req: NextApiRequest, res: NextApiResponse) => {
+	const { id } = req.query;
+	await db.connect();
+	const entry = await Entry.findById(id);
+	await db.disconnect();
+
+	if (!entry)
+		return res
+			.status(400)
+			.json({ message: 'No hay entrada con ese ID: ' + id });
+
+	return res.status(200).json(entry);
 };

@@ -13,11 +13,5 @@ interface SeedEntry {
 export type EntryStatus = 'pending' | 'in-progress' | 'finished';
 
 export const seedData: SeedData = {
-	entries: [
-		{
-			description: 'Pendiente',
-			status: 'pending',
-			createdAt: Date.now(),
-		},
-	],
+	entries: [],
 };
