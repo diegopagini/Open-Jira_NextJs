@@ -1,6 +1,4 @@
 /** @format */
-import mongoose from 'mongoose';
-
 import { db } from '../../../database';
 import { Entry, IEntry } from '../../../models';
 
@@ -15,11 +13,6 @@ export default function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
-	const { id } = req.query; // Tomo el id.
-	if (!mongoose.isValidObjectId(id)) {
-		return res.status(400).json({ message: 'El id no es válido ' + id });
-	}
-
 	switch (req.method) {
 		case 'PUT':
 			return updateEntry(req, res);
