@@ -17,22 +17,24 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material';
-import mongoose from 'mongoose';
 import { GetServerSideProps } from 'next';
-import { ChangeEvent, FC, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useContext, useMemo, useState } from 'react';
 
 import { Layout } from '../../components/layouts';
-import { EntryStatus } from '../../interfaces';
+import { EntriesContext } from '../../context/entries';
+import { dbEntries } from '../../database';
+import { Entry, EntryStatus } from '../../interfaces';
 
 const validStatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
 
 interface Props {
-	id: string;
+	entry: Entry;
 }
 
-export const EntryPage: FC<Props> = (props) => {
-	const [inputValue, setInputValue] = useState('');
-	const [status, setStatus] = useState<EntryStatus>('pending');
+export const EntryPage: FC<Props> = ({ entry }) => {
+	const { updateEntry } = useContext(EntriesContext);
+	const [inputValue, setInputValue] = useState(entry.description);
+	const [status, setStatus] = useState<EntryStatus>(entry.status);
 	const [touched, setTouched] = useState(false);
 
 	const isNotValid = useMemo(
@@ -48,16 +50,26 @@ export const EntryPage: FC<Props> = (props) => {
 		setStatus(event.target.value as EntryStatus);
 	};
 
-	const onSave = () => {};
+	const onSave = () => {
+		if (inputValue.trim().length === 0) return;
+
+		const updatedEntry: Entry = {
+			...entry,
+			status,
+			description: inputValue,
+		};
+
+		updateEntry(updatedEntry, true);
+	};
 
 	return (
-		<Layout title='...'>
+		<Layout title={inputValue.substring(0, 20) + '...'}>
 			<Grid container justifyContent='center' sx={{ marginTop: 2 }}>
 				<Grid item xs={12} sm={8} md={6}>
 					<Card>
 						<CardHeader
-							title={`Entrada: ${inputValue}`}
-							subheader={`Creada hace: ... minutos`}
+							title={`Entrada:`}
+							subheader={`Creada hace: ${entry.createdAt} minutos`}
 						/>
 
 						<CardContent>
@@ -125,7 +137,9 @@ export const EntryPage: FC<Props> = (props) => {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const { id } = params as { id: string };
 
-	if (!mongoose.isValidObjectId(id)) {
+	const entry = await dbEntries.getEntryById(id);
+
+	if (!entry) {
 		return {
 			redirect: {
 				destination: '/',
@@ -137,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	return {
 		// Estas props son las que se van a pasar al componente.
 		props: {
-			id,
+			entry,
 		},
 	};
 };

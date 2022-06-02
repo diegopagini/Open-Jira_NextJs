@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Navbar, Sidebar } from '../ui';
+import { Navbar } from '../ui';
 
 interface Props {
 	title?: string;
@@ -26,7 +26,7 @@ export const Layout: NextPage<Props> = ({
 			</Head>
 
 			<Navbar></Navbar>
-			<Sidebar></Sidebar>
+			{/* <Sidebar></Sidebar> */}
 
 			<Box
 				sx={{
