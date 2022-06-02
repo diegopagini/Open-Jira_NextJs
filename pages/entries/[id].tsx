@@ -17,14 +17,20 @@ import {
   RadioGroup,
   TextField,
 } from '@mui/material';
-import { ChangeEvent, useMemo, useState } from 'react';
+import mongoose from 'mongoose';
+import { GetServerSideProps } from 'next';
+import { ChangeEvent, FC, useMemo, useState } from 'react';
 
 import { Layout } from '../../components/layouts';
 import { EntryStatus } from '../../interfaces';
 
 const validStatus: EntryStatus[] = ['pending', 'in-progress', 'finished'];
 
-export const EntryPage = () => {
+interface Props {
+	id: string;
+}
+
+export const EntryPage: FC<Props> = (props) => {
 	const [inputValue, setInputValue] = useState('');
 	const [status, setStatus] = useState<EntryStatus>('pending');
 	const [touched, setTouched] = useState(false);
@@ -61,7 +67,7 @@ export const EntryPage = () => {
 								placeholder='Actualizar entrada'
 								autoFocus
 								multiline
-								label='Actualizar Entrada'
+								label='Actualizar entrada'
 								onBlur={() => setTouched(true)}
 								value={inputValue}
 								onChange={onInputValueChanged}
@@ -111,6 +117,29 @@ export const EntryPage = () => {
 			</IconButton>
 		</Layout>
 	);
+};
+
+// Las propiedades estáticas las definimos al final.
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+	const { id } = params as { id: string };
+
+	if (!mongoose.isValidObjectId(id)) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		// Estas props son las que se van a pasar al componente.
+		props: {
+			id,
+		},
+	};
 };
 
 export default EntryPage;
